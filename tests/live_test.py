@@ -2,6 +2,7 @@
 
     python tests/live_test.py find            # Find TVs: the driver's own SSDP search, over real UDP
     python tests/live_test.py <TV IP>         # pair (accept on the TV), Print Diagnostics, pop-ups
+    python tests/live_test.py <TV IP> --picture   # and one pop-up with a small picture (iconData): does this TV show it?
 
 Runs the assembled driver.lua in the harness (Lua 5.1 and the fake Director) with its
 network bridged to real sockets: TLS to the TV on port 3001 (or TCP on 3000), UDP for
@@ -11,6 +12,8 @@ This computer pairs with the TV as a device of its own (the TV asks once): its c
 key is kept in ~/.directorlink/lg-tv-live.json, never in the repository. The log
 lines printed are the driver's own, so the key never shows. Not part of CI.
 """
+import base64
+import io
 import json
 import os
 import select
@@ -161,7 +164,35 @@ def find():
     print("\nTVs Found:", live.d.prop_list("TVs Found"))
 
 
-def pair_and_show(ip):
+def picture_png():
+    """An 80 x 80 PNG (webOS's own toast icon size): the driver's icon."""
+    from PIL import Image
+    img = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src", "www", "icons", "tv_300.png"))
+    out = io.BytesIO()
+    img.convert("RGBA").resize((80, 80), Image.LANCZOS).save(out, "PNG", optimize=True)
+    return base64.b64encode(out.getvalue()).decode()
+
+
+def try_picture(live):
+    """A pop-up with iconData, sent as the open-source clients send it. Many webOS versions drop such a
+    pop-up without a word: an answer means the TV took it, not that it showed the picture."""
+    d = live.d
+    d.g.PIC_B64 = picture_png()
+    d.run("""
+        LIVE_PIC = nil
+        gTv.pending["pic_live"] = { answered = false, cb = function(ok, res)
+            LIVE_PIC = ok and "the TV took it" or ("the TV refused it: " .. tostring(res)) end }
+        WsSend(gTv.ws, JsonEncode({ type = "request", id = "pic_live", uri = TOAST_URI,
+            payload = JsonObject({ message = "Picture test: is the TV picture shown next to this text?", iconData = PIC_B64, iconExtension = "png" }) }))
+    """)
+    live.run(6, until=lambda: d.g.LIVE_PIC is not None)
+    answer = d.g.LIVE_PIC
+    print()
+    print("== Picture test:", answer or "no answer within 6 s (the TV dropped it, as many webOS versions do)")
+    print("   Look at the TV: did the pop-up show, and with the small TV picture?")
+
+
+def pair_and_show(ip, picture=False):
     os.makedirs(os.path.dirname(STATE), exist_ok=True)
     persist = {}
     if os.path.exists(STATE):
@@ -197,6 +228,9 @@ def pair_and_show(ip):
     print("\n== Events:", d.events(), "\n== LAST_NOTIFICATION:", d.var("LAST_NOTIFICATION"))
     d.action("PrintDiagnostics")
     live.logs()
+    if picture:
+        live.run(6)  # the 5-second gap after the last pop-up
+        try_picture(live)
 
 
 if __name__ == "__main__":
@@ -205,4 +239,4 @@ if __name__ == "__main__":
     if sys.argv[1] == "find":
         find()
     else:
-        pair_and_show(sys.argv[1])
+        pair_and_show(sys.argv[1], picture="--picture" in sys.argv[2:])
