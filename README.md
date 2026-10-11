@@ -232,6 +232,8 @@ python tools/build.py            # -> dist/DirectorLink-LG-TV.c4z, dist/SHA256SU
 
 `test_static.py` needs `luac` 5.1 (`apt install lua5.1`).
 
+`tests/live_test.py` runs the same driver code against a real LG TV from a computer on the TV's network (not part of CI): `python tests/live_test.py find` runs the driver's own Find TVs; `python tests/live_test.py <TV IP>` pairs (accept on the TV), prints the diagnostics and shows two pop-ups, one in Hebrew. That computer pairs as a device of its own; its key is kept in `~/.directorlink/lg-tv-live.json`, never in the repository.
+
 | Path | Contents |
 |---|---|
 | `src/core.lua` | Logging with secret redaction (the TV's key), timers, variables and events, saved settings, utilities |
@@ -242,7 +244,7 @@ python tools/build.py            # -> dist/DirectorLink-LG-TV.c4z, dist/SHA256SU
 | `src/notify.lua` | Notifications: IDs, kinds, Quiet Hours, one every 5 seconds, a doorbell or the alarm first |
 | `src/driver.lua`, `src/driver.xml`, `src/www/` | The driver, its definition, documentation and icons |
 | `tools/` | `build.py` (package), `make_icons.py` (icons) |
-| `tests/` | `harness.py` (Lua 5.1 with a fake Director, its network and a virtual clock), `fake_tv.py` (an LG TV), and the tests |
+| `tests/` | `harness.py` (Lua 5.1 with a fake Director, its network and a virtual clock), `fake_tv.py` (an LG TV), the tests, and `live_test.py` (the driver against a real TV) |
 | `VERSION`, `CHANGELOG.md`, `docs/releases/` | The version, the change log, and the notes for each release |
 
 `build.py` puts the Lua parts together and stamps the version from `VERSION` and the build date into the packaged copy. The driver version Composer compares is major·1000000 + minor·10000 + patch·100 + build, where build is the beta number, or 99 for the release: `1.0.0-beta.1` → `1000001`, `1.0.0` → `1000099`.
