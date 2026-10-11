@@ -1,0 +1,30 @@
+DirectorLink · LG TV Notifications for Control4
+Copyright 2026 DirectorLink
+
+This product is licensed under the Apache License 2.0 (see LICENSE).
+
+DirectorLink is an independent project, not affiliated with Control4 or Snap One.
+Not affiliated with or endorsed by LG Electronics. webOS is a trademark of its owner.
+Product names are trademarks of their owners.
+
+Credits
+
+No third-party code is included. How the TV's local API (SSAP, a WebSocket on
+ports 3001 and 3000) works, and the form of the registration manifest, were
+learned from LG's Connect SDK (https://github.com/ConnectSDK, Apache License 2.0),
+Home Assistant's aiowebostv (https://github.com/home-assistant-libs/aiowebostv,
+Apache License 2.0), LGWebOSRemote (https://github.com/klattimer/LGWebOSRemote,
+MIT License), lgtv2 (https://github.com/hobbyquaker/lgtv2, MIT License) and
+openHAB's LG webOS binding (https://github.com/openhab/openhab-addons, Eclipse
+Public License 2.0), and from their issue reports about LG's 2026 firmware. No
+code was copied from them.
+
+The WebSocket client follows the design of DirectorLink's own
+(driver/src/cloud/websocket.lua, https://github.directorlink.io, Apache License
+2.0). Finding TVs (SSDP) follows Snap One's SSDP module as DirectorLink uses it.
+Control4 interfaces follow the public Snap One DriverWorks documentation
+(https://snap-one.github.io/docs-driverworks-fundamentals/).
+
+The test fixtures in tests/ follow the shape of the TV's messages as those
+clients record them and describe a made-up home; names, addresses, keys and ids
+in them are invented.

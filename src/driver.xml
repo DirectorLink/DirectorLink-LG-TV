@@ -1,0 +1,105 @@
+<devicedata>
+	<copyright>Copyright 2026 DirectorLink</copyright>
+	<creator>DirectorLink</creator>
+	<manufacturer>LG</manufacturer>
+	<name>DirectorLink · LG TV Notifications</name>
+	<model>webOS TV pop-up notifications</model>
+	<created>10/11/2026 00:00</created>
+	<!-- tools/build.py stamps modified and version from the VERSION file -->
+	<modified>10/11/2026 00:00</modified>
+	<version>0</version>
+	<small image_source="c4z">icons/device_sm.png</small>
+	<large image_source="c4z">icons/device_lg.png</large>
+	<control>lua_gen</control>
+	<controlmethod>ip</controlmethod>
+	<driver>DriverWorks</driver>
+	<minimum_os_version>3.3.0</minimum_os_version>
+	<!-- One driver per TV. Never change or remove event ids, command or property names in later
+	     versions: Control4 projects that already use the driver depend on them. The variables
+	     (LAST_NOTIFICATION, then DIRECTORLINK_NOTIFY and DIRECTORLINK_NOTIFY_KINDS, the DirectorLink
+	     notification agreement) are added by the driver at every start, always in this order.
+	     DIRECTORLINK_NOTIFY, the agreement's command, comes with C4:SendToDevice from DirectorLink and is
+	     not a command of the Programming tab. -->
+
+	<events>
+		<event><id>1</id><name>Notification Shown</name><description>When NAME has shown a pop-up on the TV; LAST_NOTIFICATION is its text</description></event>
+		<event><id>2</id><name>Notification Failed</name><description>When a pop-up could not be shown on NAME's TV (off, not reachable, no answer within 3 seconds, or not paired); LAST_NOTIFICATION is its text</description></event>
+	</events>
+
+	<config>
+		<script file="driver.lua" jit="1"/>
+		<documentation file="www/documentation.html"/>
+
+		<properties>
+			<property><name>Status</name><type>STRING</type><readonly>true</readonly><default>Starting...</default></property>
+			<property><name>TV</name><type>STRING</type><readonly>true</readonly><default></default></property>
+			<property>
+				<name>TV IP Address</name><type>STRING</type><readonly>false</readonly><default></default>
+				<tooltip>The LG TV's IP address, for example 192.168.1.40, or pick it in TVs Found. Give the TV a fixed address in the router.</tooltip>
+			</property>
+			<property>
+				<name>TVs Found</name><type>LIST</type><readonly>false</readonly><default>-</default>
+				<items><item>-</item></items>
+				<tooltip>The LG TVs that answered Find TVs (they answer while they are on). Pick one to fill in TV IP Address.</tooltip>
+			</property>
+			<property>
+				<name>Doorbell</name><type>LIST</type><readonly>false</readonly><default>On</default>
+				<items><item>On</item><item>Off</item></items>
+				<tooltip>Show DirectorLink's doorbell rings on this TV.</tooltip>
+			</property>
+			<property>
+				<name>Camera Alerts</name><type>LIST</type><readonly>false</readonly><default>Off</default>
+				<items><item>On</item><item>Off</item></items>
+				<tooltip>Show DirectorLink's camera alerts (a person, a vehicle...) on this TV.</tooltip>
+			</property>
+			<property>
+				<name>Doors and Gates</name><type>LIST</type><readonly>false</readonly><default>Off</default>
+				<items><item>On</item><item>Off</item></items>
+				<tooltip>Show DirectorLink's notifications that a door or gate opened on this TV.</tooltip>
+			</property>
+			<property>
+				<name>Alarm</name><type>LIST</type><readonly>false</readonly><default>On</default>
+				<items><item>On</item><item>Off</item></items>
+				<tooltip>Show DirectorLink's alarm notifications on this TV.</tooltip>
+			</property>
+			<property>
+				<name>Other</name><type>LIST</type><readonly>false</readonly><default>Off</default>
+				<items><item>On</item><item>Off</item></items>
+				<tooltip>Show DirectorLink's other notifications on this TV.</tooltip>
+			</property>
+			<property>
+				<name>Quiet Hours</name><type>STRING</type><readonly>false</readonly><default></default>
+				<tooltip>From-to, in the controller's local time, for example 22:00-07:00: no pop-ups on this TV then. Empty: none.</tooltip>
+			</property>
+			<property>
+				<name>Log Level</name><type>LIST</type><readonly>false</readonly><default>Info</default>
+				<items><item>Off</item><item>Errors</item><item>Warnings</item><item>Info</item><item>Debug</item><item>Trace</item></items>
+				<tooltip>Info writes one line for every pop-up. Debug and Trace show the connection and every message to and from the TV (never the TV's client key).</tooltip>
+			</property>
+		</properties>
+
+		<actions>
+			<action><name>Find TVs</name><command>FindTVs</command></action>
+			<action><name>Test Notification</name><command>TestNotification</command></action>
+			<action><name>Pair Again</name><command>PairAgain</command></action>
+			<action><name>Print Diagnostics</name><command>PrintDiagnostics</command></action>
+		</actions>
+
+		<commands>
+			<command>
+				<name>SHOW_NOTIFICATION</name><description>Show a pop-up on NAME's TV: PARAM1, PARAM2</description>
+				<params>
+					<param><name>Title</name><type>STRING</type></param>
+					<param><name>Message</name><type>STRING</type></param>
+				</params>
+			</command>
+		</commands>
+	</config>
+
+	<!-- A self-contained device (combo driver, its own proxy), as DirectorLink itself and Snap One's
+	     sample drivers are: no tile in the Control4 apps. -->
+	<combo>true</combo>
+	<proxies>
+		<proxy>DirectorLink-LG-TV</proxy>
+	</proxies>
+</devicedata>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DirectorLink · LG TV Notifications</title>
+<style>
+  :root { --cyan:#28d2ff; --cyan-ink:#0a7fa3; --ink:#1f2328; --muted:#5d6670; --bg:#ffffff; --panel:#f4f6f8; --line:#dde3e8; --hero:#23272b; --hero2:#3a3f44; }
+  @media (prefers-color-scheme: dark) { :root { --ink:#e8ecef; --muted:#9aa4ad; --bg:#15181b; --panel:#1e2226; --line:#30363c; --cyan-ink:#28d2ff; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:14px/1.55 "Segoe UI", -apple-system, Arial, sans-serif; }
+  a { color:var(--cyan-ink); }
+  .hero { background:linear-gradient(135deg, var(--hero), var(--hero2)); color:#fff; padding:22px 24px; display:flex; gap:18px; align-items:center; }
+  .hero img { width:84px; height:84px; flex:none; }
+  .hero h1 { margin:0; font-size:22px; font-weight:600; }
+  .hero .tag { color:var(--cyan); font-weight:600; margin:2px 0 6px; }
+  .hero p { margin:0; color:#c9d1d8; }
+  .hero p.url { color:#fff; margin:0 0 6px; font-weight:600; }
+  .badge { display:inline-block; background:var(--cyan); color:#06222b; font-size:11px; font-weight:700; padding:1px 8px; border-radius:10px; margin-left:8px; vertical-align:3px; }
+  main { max-width:920px; padding:8px 24px 32px; }
+  h2 { font-size:17px; margin:28px 0 10px; padding-left:10px; border-left:4px solid var(--cyan); }
+  h3 { font-size:14px; margin:18px 0 6px; }
+  .muted { color:var(--muted); }
+  .links { margin:14px 0 0; padding:10px 14px; background:var(--panel); border:1px solid var(--line); border-radius:8px; }
+  table { border-collapse:collapse; width:100%; margin:8px 0; }
+  th, td { border-bottom:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top; }
+  th { background:var(--panel); font-weight:600; }
+  code { background:var(--panel); border:1px solid var(--line); padding:0 4px; border-radius:4px; font-size:12.5px; }
+  .steps { counter-reset:step; list-style:none; padding:0; margin:8px 0; }
+  .steps li { counter-increment:step; position:relative; padding:8px 10px 8px 44px; margin:6px 0; background:var(--panel); border:1px solid var(--line); border-radius:8px; }
+  .steps li::before { content:counter(step); position:absolute; left:10px; top:8px; width:24px; height:24px; border-radius:50%; background:var(--cyan); color:#06222b; font-weight:700; text-align:center; line-height:24px; font-size:12.5px; }
+  .note { border-left:3px solid var(--cyan); background:var(--panel); padding:8px 12px; border-radius:0 8px 8px 0; }
+</style>
+</head>
+<body>
+<div class="hero">
+  <img src="icons/tv_300.png" alt="">
+  <div>
+    <h1>DirectorLink &middot; LG TV Notifications <span class="badge">BETA</span></h1>
+    <div class="tag">Free, open-source Control4 driver: notifications as a pop-up on LG webOS TVs. Part of DirectorLink Drivers.</div>
+    <p class="url">https://directorlink.io/drivers/lg-tv</p>
+    <p>A doorbell ring, a camera alert, a door or gate opened, the alarm: on the TV, over whatever is on. On the home network only: no cloud, no LG account, no ThinQ.</p>
+  </div>
+</div>
+<main>
+<div class="links">Free. No subscription, no license key, no account with us. Downloads, updates and help: see the address above (online with 1.0.0). DirectorLink is an independent project, not affiliated with Control4 or Snap One. Not affiliated with or endorsed by LG Electronics. webOS is a trademark of its owner.</div>
+
+<h2>Setup</h2>
+<p>One driver per TV, in the TV's room.</p>
+<ol class="steps">
+  <li><b>Give the TV a fixed IP address</b> in the router, and <b>turn the TV on</b> (not standby).</li>
+  <li>Pick the TV in <b>TVs Found</b> (the driver looks for LG TVs when it is added; <i>Find TVs</i> looks again), or type its address in <b>TV IP Address</b>.</li>
+  <li><b>Accept on the TV</b> with its remote: within a few seconds the TV asks whether to allow a new device. The words are the TV's own and may not name DirectorLink. <b>Status</b> says <i>Paired</i>.</li>
+  <li>Run <b>Test Notification</b>: the TV shows <i>Control4: Test: pop-ups from Control4 work on this TV.</i></li>
+  <li>Choose what this TV shows (<b>Doorbell</b>, <b>Camera Alerts</b>, <b>Doors and Gates</b>, <b>Alarm</b>, <b>Other</b>) and <b>Quiet Hours</b>.</li>
+</ol>
+<p class="note">The TV asks once. If nobody accepts (the TV asks for about two minutes), or it is refused, the driver does not ask again by itself: run <b>Pair Again</b> with the TV on.</p>
+
+<h2>When a pop-up shows</h2>
+<p><b>Only when the TV is on.</b> Off, in standby or with its screen off, the pop-up is dropped with one line in the log, and <i>Notification Failed</i> fires. The driver never turns the TV on. The TV has <b>3 seconds</b> to answer; when the driver is not connected at that moment, it connects at once.</p>
+<p><b>One pop-up every 5 seconds at most</b> on each TV; the others wait their turn, a doorbell or the alarm first. <b>Only the kinds switched on, nothing during Quiet Hours</b> (Show Notification ignores the kinds; Test Notification always shows). The text is shown as sent, as <code>Title: Message</code>, Hebrew included. No picture: many webOS versions show nothing at all when a pop-up carries one.</p>
+<p><b>The connection:</b> port 3001 (TLS; the TV's own certificate, the same on every LG TV, is taken as it is), port 3000 on TVs before 2018. A ping every 15 seconds; when the TV goes away, the driver tries again after 5 s, 30 s, 2 min, then every 5 min. The TV's key is never logged or shown; it can only show pop-ups and read whether the TV is on.</p>
+
+<h2>Status</h2>
+<table>
+  <tr><th>Status</th><th>Means</th></tr>
+  <tr><td>Paired</td><td>Connected and the TV is on: pop-ups show.</td></tr>
+  <tr><td>Waiting for you to accept on the TV</td><td>The TV is asking: accept it with the remote.</td></tr>
+  <tr><td>Off</td><td>The TV is off or in standby (it answered at this address before).</td></tr>
+  <tr><td>Not reachable</td><td>No TV has answered at this address yet: check the address and that the TV is on.</td></tr>
+  <tr><td>Not accepted on the TV / Not paired</td><td>The TV said no, or nobody answered: run Pair Again with the TV on.</td></tr>
+</table>
+
+<h2>Properties</h2>
+<table>
+  <tr><th>Property</th><th>Description</th></tr>
+  <tr><td>Status &middot; TV</td><td>What the driver is doing (above); the TV's model and webOS version.</td></tr>
+  <tr><td>TV IP Address</td><td>The TV's IP address, for example <code>192.168.1.40</code>.</td></tr>
+  <tr><td>TVs Found</td><td>The LG TVs that answered Find TVs (TVs that are on). Picking one fills in TV IP Address.</td></tr>
+  <tr><td>Doorbell &middot; Camera Alerts &middot; Doors and Gates &middot; Alarm &middot; Other</td><td>On or Off: which of DirectorLink's notifications this TV shows. Doorbell and Alarm are On by default.</td></tr>
+  <tr><td>Quiet Hours</td><td>From-to in the controller's local time, for example <code>22:00-07:00</code>: no pop-ups then. Empty: none.</td></tr>
+  <tr><td>Log Level</td><td>Info: one line for every pop-up. Debug and Trace: the connection and every message (never the TV's key).</td></tr>
+</table>
+<p><b>Actions:</b> Find TVs &middot; Test Notification &middot; Pair Again &middot; Print Diagnostics (the TV, the connection, its power state, the kinds and Quiet Hours, the last 10 notifications and what happened to each).</p>
+
+<h2>Programming reference</h2>
+<p><b>Command:</b> <code>SHOW_NOTIFICATION</code> (Title, Message): a pop-up, whatever the kinds, not during Quiet Hours. <b>Events:</b> Notification Shown &middot; Notification Failed (off, not reachable, no answer within 3 seconds, or not paired). <b>Variable:</b> <code>LAST_NOTIFICATION</code> (STRING), the text of the last pop-up shown or failed, set before the event fires. For several TVs, add Show Notification for each TV in the same <i>When</i>.</p>
+
+<h2>DirectorLink</h2>
+<p>DirectorLink 1.13 and newer sends its notifications to this driver as soon as both are in the project (DirectorLink is not required). The driver follows the <b>DirectorLink notification agreement, version 1</b>:</p>
+<table>
+  <tr><th>What</th><th>The driver</th></tr>
+  <tr><td>Marker</td><td>String variable <code>DIRECTORLINK_NOTIFY</code> = <code>1</code>, set at every start, after the driver's other variables (never reordering them).</td></tr>
+  <tr><td>Kinds</td><td>String variable <code>DIRECTORLINK_NOTIFY_KINDS</code>: the kinds switched on, comma-separated, from <code>doorbell</code>, <code>camera</code>, <code>door</code>, <code>alarm</code>, <code>other</code>; updated whenever a property changes.</td></tr>
+  <tr><td>A notification</td><td>The command <code>DIRECTORLINK_NOTIFY</code> by <code>C4:SendToDevice</code>, taken in ExecuteCommand and ReceivedFromProxy, with <code>VERSION</code> (<code>1</code>), <code>ID</code> (unique; a repeat within 10 minutes is ignored), <code>KIND</code>, <code>TITLE</code> and <code>MESSAGE</code> (final text in the home's language, shown exactly as given), <code>PICTURE</code> (optional, an http address on the controller with a JPEG for 60 seconds; not used by this driver).</td></tr>
+  <tr><td>Rules</td><td>Never block. Only the kinds switched on, nothing during Quiet Hours. At most one pop-up every 5 seconds per TV, a doorbell or the alarm first. Set <code>LAST_NOTIFICATION</code>, then fire Notification Shown or Notification Failed.</td></tr>
+</table>
+<p class="muted">The variables come in this order: <code>LAST_NOTIFICATION</code>, <code>DIRECTORLINK_NOTIFY</code>, <code>DIRECTORLINK_NOTIFY_KINDS</code>.</p>
+
+<h2>Change log</h2>
+<table>
+  <tr><th>Version</th><th>Changes</th></tr>
+  <tr><td>1.0.0-beta.1</td><td>First release (beta).</td></tr>
+</table>
+
+<h2>License</h2>
+<p class="muted">Installing third-party drivers or changing a Control4 project can affect compatibility, support, warranty or recovery. Keep a backup of your project. The license is included as <code>www/LICENSE.txt</code> and <code>www/NOTICE.txt</code>.</p>
+<p>Apache License 2.0. Copyright 2026 DirectorLink. DirectorLink is an independent project, not affiliated with Control4 or Snap One. Not affiliated with or endorsed by LG Electronics. webOS is a trademark of its owner. Product names are trademarks of their owners. DirectorLink's own source code: https://github.directorlink.io</p>
+</main>
+</body>
+</html>
