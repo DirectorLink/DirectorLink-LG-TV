@@ -2,6 +2,12 @@
 
 All notable changes to DirectorLink · LG TV Notifications for Control4. Versions follow the `VERSION` file; the driver version Composer compares is in brackets.
 
+## 1.0.0 (1000099) - 2026-10-12
+
+First full release. The driver is the same as 1.0.0-beta.1, confirmed working by an installer on a real LG TV: pairing with the TV's remote and pop-ups from Control4.
+
+- From 1.0.0-beta.1: updates in place (settings, the TV's key and programming stay; the TV does not ask again).
+
 ## 1.0.0-beta.1 (1000001) - 2026-10-11
 
 First release, a **beta**: built on LG's local webOS API as LG's Connect SDK and Home Assistant's aiowebostv use it (with the unsigned pairing LG's 2026 firmware needs), tested against a fake TV and a fake Director, not yet confirmed on a real LG TV.

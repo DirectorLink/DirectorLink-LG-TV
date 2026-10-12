@@ -10,9 +10,9 @@ Made by [DirectorLink](https://directorlink.io), the open-source management laye
 
 DirectorLink is an independent project, not affiliated with Control4 or Snap One. Not affiliated with or endorsed by LG Electronics. webOS is a trademark of its owner.
 
-**Download:** [releases](../../releases) · **Help and updates:** [directorlink.io/drivers/lg-tv](https://directorlink.io/drivers/lg-tv) (online with 1.0.0)
+**Download:** [releases](../../releases) · **Help and updates:** [directorlink.io/drivers/lg-tv](https://directorlink.io/drivers/lg-tv)
 
-> **Beta.** The driver follows LG's local API as LG's Connect SDK and Home Assistant use it (with the changes LG's 2026 firmware needs), and passes its tests against a fake TV built from what those clients see. It has not run on a real LG TV yet. If you try it, please send the log: see [Trying the beta](#trying-the-beta).
+> **Confirmed on a real LG TV** by an installer (1.0.0-beta.1, the same driver as 1.0.0). Reports from other models and webOS versions are welcome: see [Trying it on your TV](#trying-it-on-your-tv).
 
 ## What you get
 
@@ -182,7 +182,7 @@ Without DirectorLink the driver works the same: Composer programming shows pop-u
 
 1. Download the new `DirectorLink-LG-TV.c4z` from the [releases](../../releases).
 2. Check that the name is exactly `DirectorLink-LG-TV.c4z`, not `... (1).c4z`.
-3. **Driver → Add or Update Driver or Agent**. The driver keeps its settings, the TV's key (no new request on the TV) and the programming.
+3. **Driver → Add or Update Driver or Agent**. The driver keeps its settings, the TV's key (no new request on the TV) and the programming. From 1.0.0-beta.1 it updates in place.
 
 ## Troubleshooting
 
@@ -198,7 +198,7 @@ Without DirectorLink the driver works the same: Composer programming shows pop-u
 
 For details run **Print Diagnostics**, with **Log Level** set to *Debug*. The output appears in the Lua tab and in the driver log.
 
-## Trying the beta
+## Trying it on your TV
 
 1. Give the TV a fixed IP address and turn it on.
 2. Add **DirectorLink · LG TV Notifications** to the TV's room, set **Log Level** to *Trace*, and pick the TV in **TVs Found** (or type its address).
